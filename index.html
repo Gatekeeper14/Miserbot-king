@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MiserBot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body style="font-family: Arial; text-align:center; background:#0f172a; color:white; padding:40px;">
+
+  <h1>Get More Customers Automatically</h1>
+  <p>MiserBot captures and converts leads for your business — 24/7.</p>
+
+  <form id="leadForm" style="margin-top:20px;">
+    <input type="text" id="name" placeholder="Your Name" required style="padding:10px; margin:5px;"><br>
+    <input type="email" id="email" placeholder="Your Email" required style="padding:10px; margin:5px;"><br>
+
+    <button type="submit" style="padding:15px 30px; background:#22c55e; border:none; border-radius:8px;">
+      Get Started
+    </button>
+  </form>
+
+  <script>
+    document.getElementById("leadForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+
+      try {
+        await fetch("https://YOUR-RAILWAY-URL/lead", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ name, email })
+        });
+
+        alert("✅ Thanks! We’ll contact you soon.");
+      } catch (err) {
+        alert("❌ Something went wrong.");
+      }
+    });
+  </script>
+
+</body>
+</html>
