@@ -1,0 +1,5 @@
+Frontend (what users see)
+= index.html (your website)
+
+Backend (your brain)
+= app.py (Railway)
