@@ -3,154 +3,230 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GetMiserBot</title>
+<title>MiserBot — AI Automation</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
+:root {
+  --gold: #C9A84C;
+  --gold-light: #E8C97A;
+  --gold-dim: #8B6914;
+  --black: #080808;
+  --black-soft: #111;
+  --card: #141414;
+  --white: #F5F0E8;
+  --white-dim: #aaa;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #0b0b0b;
-    color: white;
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Montserrat', sans-serif;
 }
 
-header {
-    padding: 15px;
-    text-align: center;
-    font-weight: bold;
-    border-bottom: 1px solid #222;
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 120px 20px 60px;
 }
 
-.container {
-    max-width: 500px;
-    margin: auto;
-    padding: 20px;
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 60px;
+  font-weight: 300;
 }
 
+.hero em { color: var(--gold); }
+
+.hero p {
+  color: var(--white-dim);
+  margin-top: 20px;
+}
+
+/* CHAT */
 .chat-box {
-    height: 400px;
-    overflow-y: auto;
-    border: 1px solid #222;
-    padding: 10px;
-    background: #111;
-    margin-bottom: 10px;
+  max-width: 420px;
+  margin: 40px auto;
+  background: var(--card);
+  border: 1px solid #222;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.chat-messages {
+  height: 300px;
+  overflow-y: auto;
+  padding: 20px;
 }
 
 .msg {
-    margin: 8px 0;
+  margin: 10px 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  max-width: 80%;
 }
 
 .user {
-    text-align: right;
-    color: #4da6ff;
+  background: var(--gold);
+  color: black;
+  margin-left: auto;
 }
 
 .bot {
-    text-align: left;
-    color: #ccc;
+  background: #1a1a1a;
 }
 
-input, button, select {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    border: none;
+.chat-input {
+  display: flex;
+  border-top: 1px solid #222;
 }
 
-button {
-    background: white;
-    color: black;
-    font-weight: bold;
-    cursor: pointer;
+.chat-input input {
+  flex: 1;
+  padding: 14px;
+  background: black;
+  border: none;
+  color: white;
+}
+
+.chat-input button {
+  padding: 14px;
+  background: var(--gold);
+  border: none;
+  cursor: pointer;
+}
+
+/* FORM */
+.form {
+  max-width: 420px;
+  margin: 40px auto;
+  background: var(--card);
+  padding: 20px;
+  border: 1px solid #222;
+  border-radius: 12px;
+}
+
+.form input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  background: black;
+  border: 1px solid #222;
+  color: white;
+}
+
+.form button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 15px;
+  background: var(--gold);
+  border: none;
+}
+
+.status {
+  text-align: center;
+  margin-top: 10px;
+  color: var(--white-dim);
 }
 </style>
 </head>
 
 <body>
 
-<header>GetMiserBot</header>
+<div class="hero">
+  <h1>The Future of <em>Business</em></h1>
+  <p>AI automation that captures every opportunity</p>
+</div>
 
-<div class="container">
+<div class="chat-box">
+  <div class="chat-messages" id="chat"></div>
 
-<div class="chat-box" id="chat"></div>
+  <div class="chat-input">
+    <input id="message" placeholder="Type here...">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+</div>
 
-<input id="message" placeholder="Type your message...">
-<button onclick="sendMessage()">Send</button>
-
-<hr>
-
-<h3>Quick Lead Form</h3>
-
-<input id="name" placeholder="Full Name">
-<input id="email" placeholder="Email">
-<input id="phone" placeholder="Phone">
-
-<select id="service">
-    <option>Business Automation</option>
-    <option>Astrocartography</option>
-    <option>Real Estate</option>
-</select>
-
-<button onclick="submitLead()">Submit</button>
-
-<p id="status"></p>
-
+<div class="form">
+  <h3>Request Demo</h3>
+  <input id="name" placeholder="Full Name">
+  <input id="email" placeholder="Email">
+  <input id="phone" placeholder="Phone">
+  <button onclick="submitLead()">Submit</button>
+  <p class="status" id="status"></p>
 </div>
 
 <script>
-const chatBox = document.getElementById("chat");
+const API = "https://miserbot-v10-production.up.railway.app";
 
-function addMessage(text, type) {
-    const div = document.createElement("div");
-    div.className = "msg " + type;
-    div.innerText = text;
-    chatBox.appendChild(div);
-    chatBox.scrollTop = chatBox.scrollHeight;
+const chat = document.getElementById("chat");
+
+function addMsg(text, type) {
+  const div = document.createElement("div");
+  div.className = "msg " + type;
+  div.innerText = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
 }
 
-// 🔥 CONNECT TO YOUR BACKEND
-const API_URL = "https://miserbot-v10-production.up.railway.app";
+// AUTO START BOT
+window.onload = () => {
+  setTimeout(() => {
+    addMsg("👋 Welcome to GetMiserBot. Type 'hi' to begin.", "bot");
+  }, 500);
+};
 
-// CHAT (simple endpoint you can expand later)
 function sendMessage() {
-    const input = document.getElementById("message");
-    const text = input.value;
+  const input = document.getElementById("message");
+  const text = input.value.trim();
+  if (!text) return;
 
-    if (!text) return;
+  addMsg(text, "user");
+  input.value = "";
 
-    addMessage(text, "user");
-    input.value = "";
-
-    // For now, simulate until /chat endpoint exists
-    addMessage("Thanks! Please use the form below so we can assist you.", "bot");
+  fetch(API + "/chat", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ message: text })
+  })
+  .then(res => res.json())
+  .then(data => addMsg(data.reply, "bot"))
+  .catch(() => addMsg("Connection error", "bot"));
 }
 
-// LEAD FORM (THIS IS LIVE)
 function submitLead() {
-    const status = document.getElementById("status");
+  const status = document.getElementById("status");
 
-    const data = {
-        name: document.getElementById("name").value,
-        email: document.getElementById("email").value,
-        phone: document.getElementById("phone").value,
-        service: document.getElementById("service").value
-    };
+  const name = document.getElementById("name");
+  const email = document.getElementById("email");
+  const phone = document.getElementById("phone");
 
-    status.innerText = "Sending...";
+  if (!name.value || !email.value || !phone.value) {
+    status.innerText = "Fill all fields";
+    return;
+  }
 
-    fetch(API_URL + "/lead", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
+  status.innerText = "Sending...";
+
+  fetch(API + "/lead", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      name: name.value,
+      email: email.value,
+      phone: phone.value
     })
-    .then(res => res.json())
-    .then(() => {
-        status.innerText = "✅ Submitted successfully!";
-    })
-    .catch(() => {
-        status.innerText = "❌ Error submitting.";
-    });
+  })
+  .then(() => {
+    status.innerText = "Submitted ✔";
+    name.value = "";
+    email.value = "";
+    phone.value = "";
+  })
+  .catch(() => status.innerText = "Error");
 }
 </script>
 
